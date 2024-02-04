@@ -31,6 +31,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 public class BaseM {
 	public static WebDriver driver;
 	public static Actions action;
+	public static WebDriverWait wb;
 
 	public static WebDriver launchBrowser(String browser) throws Throwable {
 
@@ -70,32 +71,28 @@ public class BaseM {
 		driver.get(url);
 		return driver;
 	}
-	
+
 	public static String titleOfWebpage() {
 		return driver.getTitle();
 	}
-	
+
 	public static String currentUrl() {
 		return driver.getCurrentUrl();
 	}
-	
+
 	public static void inputClear(WebElement ele) {
 		ele.clear();
 	}
-	
+
 	public static void userInput(WebElement element, String value) {
 		element.sendKeys(value);
 	}
-	
+
 	public static void eclick(WebElement element) {
 		element.click();
 
 	}
-	
-	public static void clickElementByJS(WebElement element) {
-        JavascriptExecutor js = (JavascriptExecutor) driver;
-        js.executeScript("arguments[0].click();", element);
-	}
+
 	
 	public static void clickElementWithActions(WebElement element) {
 		waituntilElementClickable(30, element);
@@ -103,27 +100,32 @@ public class BaseM {
         action.moveToElement(element).click().build().perform();
     }
 	
-	public static void printValue(WebElement element) {
-		String text = element.getText();
-		System.out.println(text);
+
+
+	public static void clickElementWithActions(WebElement element, int duration) {
+		action = new Actions(driver);
+		waituntilElementClickable(duration, element);
+		action.moveToElement(element).click().build().perform();
 	}
-	
+
+
+
 	public static void alertPopUp() {
 		driver.switchTo().alert().accept();
 	}
-	
+
 	public static void forwardNavigate() {
 		driver.navigate().forward();
 	}
-	
+
 	public static void backNavigate() {
 		driver.navigate().back();
 	}
-	
+
 	public static void refreshNavigate() {
 		driver.navigate().refresh();
 	}
-	
+
 	public static void pageUp() {
 		JavascriptExecutor js = (JavascriptExecutor) driver;
 		js.executeScript("window.scrollBy(0,-500)");
@@ -132,16 +134,16 @@ public class BaseM {
 	public static void pageDown() {
 		JavascriptExecutor js = (JavascriptExecutor) driver;
 		js.executeScript("window.scrollBy(0,1000)");
-	}	
-	
+	}
+
 	public static void scrollIntoView(WebElement element) {
 		JavascriptExecutor js = (JavascriptExecutor) driver;
 		js.executeScript("arguments[0].scrollIntoView();", element);
 	}
-	
+
 	public static void waituntilElementVisibility(int timeDuration, WebElement element) {
 		try {
-			WebDriverWait wb = new WebDriverWait(driver, Duration.ofSeconds(timeDuration));
+			wb = new WebDriverWait(driver, Duration.ofSeconds(timeDuration));
 			wb.until(ExpectedConditions.visibilityOf(element));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -149,10 +151,10 @@ public class BaseM {
 			throw new RuntimeException();
 		}
 	}
-	
+
 	public static void waituntilElementClickable(int timeDuration, WebElement element) {
 		try {
-			WebDriverWait wb = new WebDriverWait(driver, Duration.ofSeconds(timeDuration));
+			wb = new WebDriverWait(driver, Duration.ofSeconds(timeDuration));
 			wb.until(ExpectedConditions.elementToBeClickable(element));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -160,10 +162,22 @@ public class BaseM {
 			throw new RuntimeException();
 		}
 	}
-	
+
+	public static void waitUntilFrameSwitched(String nameOrId, int index, WebElement ele, int timeDuration) {
+	    wb = new WebDriverWait(driver, Duration.ofSeconds(timeDuration));
+	    
+	    if (nameOrId != null && !nameOrId.isEmpty()) {
+	    	wb.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(nameOrId));
+	    } else if (index >= 0) {
+	    	wb.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(index));
+	    } else if (ele != null) {
+	    	wb.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(ele));
+	    }
+	}
+
 	public static void waitInvisibleElement(int timeDuration, WebElement element) {
 		try {
-			WebDriverWait wb = new WebDriverWait(driver, Duration.ofSeconds(timeDuration));
+			wb = new WebDriverWait(driver, Duration.ofSeconds(timeDuration));
 			wb.until(ExpectedConditions.invisibilityOf(element));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -171,23 +185,23 @@ public class BaseM {
 			throw new RuntimeException();
 		}
 	}
-	
+
 	public static void mouseAction(WebElement element, String options) throws Throwable {
-		Actions a = new Actions(driver);
+		 action = new Actions(driver);
 		try {
 			if (options.equalsIgnoreCase("click")) {
 				waituntilElementVisibility(30, element);
-				a.click(element).perform();
+				action.click(element).perform();
 			} else if (options.equalsIgnoreCase("context click")) {
 				waituntilElementVisibility(30, element);
-				a.contextClick(element).perform();
+				action.contextClick(element).perform();
 			} else if (options.equalsIgnoreCase("double click")) {
 				waituntilElementVisibility(30, element);
-				a.doubleClick(element).perform();
+				action.doubleClick(element).perform();
 			} else if (options.equalsIgnoreCase("move to element")) {
 				waituntilElementVisibility(30, element);
-				a.moveToElement(element).perform();
-				a.click().perform();
+				action.moveToElement(element).perform();
+				action.click().perform();
 			} else {
 				throw new Exception();
 			}
@@ -196,12 +210,12 @@ public class BaseM {
 			System.out.println("invalid mouse action");
 		}
 	}
-	
+
 	public static void dragAndDrop(WebElement from, WebElement to) {
 		action = new Actions(driver);
 		action.dragAndDrop(from, to).build().perform();
 	}
-	
+
 	public static void WebElementDisplay(WebElement element) {
 		boolean display = element.isDisplayed();
 		if (display) {
@@ -210,7 +224,7 @@ public class BaseM {
 			System.out.println("Button not display");
 		}
 	}
-	
+
 	public static void webElementEnabled(WebElement element) {
 		boolean enabled = element.isEnabled();
 		if (enabled) {
@@ -219,12 +233,12 @@ public class BaseM {
 			System.out.println("Button not enabled");
 		}
 	}
-	
+
 	public static void dropDown(WebElement element, String Option, String value) {
 		Select sc = new Select(element);
 		try {
 			if (Option.equalsIgnoreCase("byIndex")) {
-				int parseInt = Integer.parseInt(value);	
+				int parseInt = Integer.parseInt(value);
 				sc.selectByIndex(parseInt);
 			} else if (Option.equalsIgnoreCase("byValue")) {
 				sc.selectByValue(value);
@@ -241,7 +255,7 @@ public class BaseM {
 		String selectedText = selectedOption.getText();
 		System.out.println("Selected Option: " + selectedText);
 	}
-	
+
 	public static void dropDownOption(WebElement ele) {
 		Select dropOptions = new Select(ele);
 
@@ -252,7 +266,7 @@ public class BaseM {
 		}
 
 	}
-	
+
 	public void takeScreenshot(String stepName) throws IOException {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmssSSS");
 		Date currentDate = new Date();
@@ -260,11 +274,11 @@ public class BaseM {
 		String fileName = stepName + "_" + timeStamp;
 		TakesScreenshot ts = (TakesScreenshot) driver;
 		File source = ts.getScreenshotAs(OutputType.FILE);
-		File destination = new File("./Screenshots/"+ fileName + ".png");
+		File destination = new File("./Screenshots/" + fileName + ".png");
 		FileUtils.copyFile(source, destination);
 	}
-	
-	public static WebElement framesWindows(int index, String nameOrId, WebElement ele) {
+
+	public static WebElement framesWindowSwitch(String nameOrId, int index, WebElement ele) {
 		if (nameOrId != null && !nameOrId.isEmpty()) {
 			driver.switchTo().frame(nameOrId);
 		} else if (index >= 0) {
@@ -275,7 +289,7 @@ public class BaseM {
 		driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
 		return null;
 	}
-	
+
 	public static void iterationWidowHandling(String text) {
 		String homeTab = driver.getWindowHandle();
 		Set<String> windowHandels = driver.getWindowHandles();
@@ -288,32 +302,32 @@ public class BaseM {
 			}
 		}
 	}
-	
+
 	public static WebDriver assertPageTitle(String expectedTitle) {
-		
-	    String actualTitle = driver.getTitle();
-	    if (actualTitle.equalsIgnoreCase(expectedTitle)) {
-	        System.out.println("Actual Title: " + actualTitle + " & Expected Title: " + expectedTitle);
-	        System.out.println("***ASSERTION PASSED***");
-	    } else {
-	        System.out.println("***ASSERTION FAILED***");
-	        System.out.println("Actual Title: " + actualTitle + " & Expected Title: " + expectedTitle);
-	    }
-	    driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
-	    return driver;
+
+		String actualTitle = driver.getTitle();
+		if (actualTitle.equalsIgnoreCase(expectedTitle)) {
+			System.out.println("Actual Title: " + actualTitle + " & Expected Title: " + expectedTitle);
+			System.out.println("***ASSERTION PASSED***");
+		} else {
+			System.out.println("***ASSERTION FAILED***");
+			System.out.println("Actual Title: " + actualTitle + " & Expected Title: " + expectedTitle);
+		}
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+		return driver;
 	}
 
 	public static WebDriver assertWebText(String expectedText, WebElement element) {
-	    String actualText = element.getText();
-	    if (actualText.contains(expectedText)) {
-	        System.out.println("Actual Text: " + actualText + " & Expected Text: " + expectedText);
-	        System.out.println("***ASSERTION PASSED***");
-	    } else {
-	        System.out.println("***ASSERTION FAILED***");
-	        System.out.println("Actual Text: " + actualText + " & Expected Text: " + expectedText);
-	    }
-	    driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
-	    return driver;
+		String actualText = element.getText();
+		if (actualText.contains(expectedText)) {
+			System.out.println("Actual Text: " + actualText + " & Expected Text: " + expectedText);
+			System.out.println("***ASSERTION PASSED***");
+		} else {
+			System.out.println("***ASSERTION FAILED***");
+			System.out.println("Actual Text: " + actualText + " & Expected Text: " + expectedText);
+		}
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+		return driver;
 	}
 
 }
