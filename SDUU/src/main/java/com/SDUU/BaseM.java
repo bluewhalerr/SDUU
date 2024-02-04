@@ -92,6 +92,17 @@ public class BaseM {
 
 	}
 	
+	public static void clickElementByJS(WebElement element) {
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("arguments[0].click();", element);
+	}
+	
+	public static void clickElementWithActions(WebElement element) {
+		waituntilElementClickable(30, element);
+        action = new Actions(driver);
+        action.moveToElement(element).click().build().perform();
+    }
+	
 	public static void printValue(WebElement element) {
 		String text = element.getText();
 		System.out.println(text);
