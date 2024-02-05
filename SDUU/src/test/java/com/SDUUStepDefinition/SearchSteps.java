@@ -28,21 +28,21 @@ public class SearchSteps extends BaseM {
 	public static LoginPage lp;
 	public static HomePage hp;
 	
-	@Before
-	public void browserSetUp(Scenario scenario) throws Throwable {
-		driver = launchBrowser("chrome");
-		lp = new LoginPage(driver);
-	}
-
-	@After
-	public void tearDown(Scenario scenario) throws IOException {
-		if (scenario.isFailed()) {
-			takeScreenshot("fail" + scenario.getName());
-			driver.quit();
-		} else {
-			//driver.quit();
-		}
-	}
+//	@Before
+//	public void browserSetUp(Scenario scenario) throws Throwable {
+//		driver = launchBrowser("chrome");
+//		lp = new LoginPage(driver);
+//	}
+//
+//	@After
+//	public void tearDown(Scenario scenario) throws IOException {
+//		if (scenario.isFailed()) {
+//			takeScreenshot("fail" + scenario.getName());
+//			driver.quit();
+//		} else {
+//			//driver.quit();
+//		}
+//	}
 
 	@Given("User is logged in to the application")
 	public void user_is_logged_in_to_the_application() throws Throwable {
@@ -69,9 +69,9 @@ public class SearchSteps extends BaseM {
 	@When("User performs an invalid search")
 	public void user_performs_an_invalid_search() {
 		
-		framesWindowSwitch("PagePane", 0, null);
+		framesWindows(0, "PagePane", null);
 		
-		clickElementWithActions(hp.getSearchBtn(), 30);
+		clickElementWithActions(hp.getSearchBtn());
 
 		eclick(hp.getItemDropdown());
 
@@ -112,8 +112,7 @@ public class SearchSteps extends BaseM {
 
 	@Then("User clicks on the Hide Search button")
 	public void user_clicks_on_the_hide_search_button() {
-		clickElementWithActions(hp.getSearchButton(), 30);
-
+		clickElementWithActions(hp.getSearchButton());
 		driver.quit();
 	}
 

@@ -38,12 +38,12 @@ public class demo extends BaseM {
 
 		eclick(directPO);
 
-		framesWindowSwitch("PagePane", 0, null);
+		framesWindows(0, "PagePane", null);
 		
 		//search with invalid po number
 		WebElement searchBtn = driver.findElement(By.id("btnShowHide"));
 
-		clickElementWithActions(searchBtn, 30);
+		clickElementWithActions(searchBtn);
 	
 		WebElement itemDropdown = driver.findElement(By.id("ddlSearchFilter_Item_Input"));
 		eclick(itemDropdown);
@@ -89,7 +89,7 @@ public class demo extends BaseM {
         printValue(searchMessage);
         
         //Hide the button
-        clickElementWithActions(searchBtn, 30);
+        clickElementWithActions(searchBtn);
         
         driver.quit();
 

@@ -21,21 +21,21 @@
 		public static LoginPage lp;
 		public static ConigReader cr;
 	
-		@Before
-		public void browserSetUp(Scenario scenario) throws Throwable {
-			driver = launchBrowser("chrome");
-			lp = new LoginPage(driver);
-		}
-	
-		@After
-		public void tearDown(Scenario scenario) throws IOException {
-			if (scenario.isFailed()) {
-				takeScreenshot("fail" + scenario.getName());
-				driver.quit();
-			} else {
-				driver.quit();
-			}
-		}
+//		@Before
+//		public void browserSetUp(Scenario scenario) throws Throwable {
+//			driver = launchBrowser("chrome");
+//			lp = new LoginPage(driver);
+//		}
+//	
+//		@After
+//		public void tearDown(Scenario scenario) throws IOException {
+//			if (scenario.isFailed()) {
+//				takeScreenshot("fail" + scenario.getName());
+//				driver.quit();
+//			} else {
+//				driver.quit();
+//			}
+//		}
 	
 		@Given("the user in on the login page of SSDU")
 		public void the_user_in_on_the_login_page_of_ssdu() throws Throwable {
